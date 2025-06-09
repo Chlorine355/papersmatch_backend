@@ -1,7 +1,6 @@
-import os
-
 import networkx as nx
 import requests
+import os
 
 
 api_key = os.environ["S2_API_KEY"]
@@ -42,6 +41,24 @@ def get_related_batch(paper_ids):
             headers={'x-api-key': api_key}).json()
         if type(r) == 'dict':
             return []
+        return r
+    except Exception:
+        return []
+
+def get_batch_papers(paper_ids):
+    if not paper_ids:
+        return []
+    try:
+        r = requests.post(
+            'https://api.semanticscholar.org/graph/v1/paper/batch',
+            params={'fields': "title,abstract,year,authors,"
+                     f"fieldsOfStudy,venue,"
+                     f"citationCount"},
+            json={"ids": paper_ids},
+            headers={'x-api-key': api_key}).json()
+        if type(r) == 'dict':
+            return []
+        print(r)
         return r
     except Exception:
         return []
